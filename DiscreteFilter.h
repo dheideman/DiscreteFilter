@@ -1,6 +1,8 @@
 /*
   DiscreteFilter.h - Library for discrete-time siso filter implementation
   Created by Daniel A. Heideman, February 2017.
+  Inspired by Strawson Design's Robotics Cape Installer:
+  https://github.com/StrawsonDesign/Robotics_Cape_Installer
 */
 
 #ifndef DiscreteFilter_h
