@@ -10,6 +10,9 @@
 
 #include "Arduino.h"
 
+// Default Values
+#define DEFAULT_PID_TIME_CONSTANT 0.01  // lp cutoff freq, (s)
+
 class DiscreteFilter
 {
 
@@ -21,7 +24,8 @@ class DiscreteFilter
     float step(float input);
     void  createFirstOrderLowPassFilter(float dt, float tau);
     void  createFirstOrderHighPassFilter(float dt, float tau);
-    void  createPIDController(float kp, float ki, float kd, float dt);
+    void  createPIDController(float kp,float ki,float kd,float dt);
+    void  createPIDController(float kp,float ki,float kd,float dt,float tau);
     void  setOrder(int order);
     void  setGain(float gain);
     void  setNumerator(float num[]);

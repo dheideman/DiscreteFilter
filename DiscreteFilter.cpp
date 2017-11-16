@@ -189,15 +189,41 @@ void  DiscreteFilter::createFirstOrderHighPassFilter(float dt, float tau)
 /*******************************************************************************
  * void createPIDController(float kp,float ki,float kd,float dt)
  *
- * Create PID controller
+ * Create PID controller with default low-pass filter on derivative term.
  * Based on:
  * http://portal.ku.edu.tr/~cbasdogan/courses/robotics/projects/discrete_pid.pdf
  ******************************************************************************/
 void  DiscreteFilter::createPIDController(float kp,float ki,float kd,float dt)
 {
+  // Default time constant
+  float tau = DEFAULT_PID_TIME_CONSTANT;
+
+  // Create filter
+  this->createPIDController(kp,ki,kd,dt,tau);
+}
+
+/*******************************************************************************
+ * float createPIDController(float kp,float ki,float kd,float dt,float tau)
+ *
+ * Create PID controller with low-pass filter on derivative term.
+ * Based on:
+ * http://portal.ku.edu.tr/~cbasdogan/courses/robotics/projects/discrete_pid.pdf
+ ******************************************************************************/
+void  DiscreteFilter::createPIDController(float kp,float ki,float kd,float dt,
+                                          float tau)
+{
+  // Default time constant
+  //float tau = DEFAULT_PID_TIME_CONSTANT;
+
+  // Calculate low-pass filter constant
+  float lpconst = dt/tau;
+
   // Calculate numerator, denominator
-  float newnum[] = {kp + ki*dt/2 + kd/dt, -1*kp + ki*dt/2 - 2*kd/dt, kd/dt};
-  float newden[] = {1, -1, 0};
+  float b2 = kp + ki*dt/2 + kd*lpconst/dt;
+  float b1 = kp*(lpconst-2) + ki*dt/2*lpconst - 2*kd*lpconst/dt;
+  float b0 = -1*kp*(lpconst-1) + ki*dt/2*(lpconst-1) + kd*lpconst/dt;
+  float newnum[] = {b2, b1, b0};
+  float newden[] = {1, lpconst-2, 1-lpconst};
 
   // Start filling in the filter
   this->setOrder(2);
