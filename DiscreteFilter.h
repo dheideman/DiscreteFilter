@@ -10,6 +10,7 @@
 
 class DiscreteFilter
 {
+
   public:
     DiscreteFilter();
     DiscreteFilter(int order, float num[], float den[]);
@@ -29,16 +30,34 @@ class DiscreteFilter
     int   getOrder();
 
   private:
+    class RingBuffer;
+
     int     _order;
     float   _gain;
     float*  _num;
     float*  _den;
-    float*  _inputs;
-    float*  _outputs;
-    int     _pos;
-    float   getBufferValue(float* buffer, int index);
-    void    addValueToBuffer(float* buffer, float value);
-    int     convertIndex(int index);
+
+    RingBuffer*  _inputs;
+    RingBuffer*  _outputs;
+};
+
+
+class DiscreteFilter::RingBuffer
+{
+  public:
+  RingBuffer();
+  RingBuffer(int n);
+  ~RingBuffer();
+  float getValue(int index);
+  void  addValue(float newvalue);
+  int   getLength();
+  void  setLength(int n);
+  void  clear();
+  private:
+  int    _length;
+  int    _pos;
+  float* _data;
+  int    convertIndex(int index);
 };
 
 #endif

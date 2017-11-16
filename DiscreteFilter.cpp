@@ -26,8 +26,8 @@ DiscreteFilter::DiscreteFilter()
   _gain    = 1.0;
   _num     = new float[_order+1];
   _den     = new float[_order+1];
-  _inputs  = new float[_order+1];
-  _outputs = new float[_order+1];
+  _inputs  = new RingBuffer(_order+1);
+  _outputs = new RingBuffer(_order+1);
   float zeros[] = {0,0};
 
   this->setNumerator(zeros);
@@ -48,8 +48,8 @@ DiscreteFilter::DiscreteFilter(int order, float num[], float den[])
   _gain    = 1.0;
   _num     = new float[_order+1];
   _den     = new float[_order+1];
-  _inputs  = new float[_order+1];
-  _outputs = new float[_order+1];
+  _inputs  = new RingBuffer(_order+1);
+  _outputs = new RingBuffer(_order+1);
 
   this->setNumerator(num);
   this->setDenominator(den);
@@ -65,8 +65,8 @@ DiscreteFilter::~DiscreteFilter()
 {
   delete [] _num;
   delete [] _den;
-  delete [] _inputs;
-  delete [] _outputs;
+  //delete [] _inputs;
+  //delete [] _outputs;
 }
 
 //////////////////////////
@@ -82,7 +82,7 @@ DiscreteFilter::~DiscreteFilter()
 float DiscreteFilter::step(float input)
 {
   // Input new input into _input ring buffer
-  addValueToBuffer(_inputs,input);
+  _inputs->addValue(input);
 
   // Calculate new output;
   float newoutput = 0.0;
@@ -90,19 +90,19 @@ float DiscreteFilter::step(float input)
   // Deal with numerator first
   for(int i=0; i<_order+1; i++)
   {
-    newoutput += _gain*_num[i]*this->getBufferValue(_inputs,i);
+    newoutput += _gain*_num[i]*_inputs->getValue(i);
   }
 
   // Deal with denominator next
   for(int i=1; i<_order+1; i++)
   {
-    newoutput -= _den[i]*this->getBufferValue(_outputs,i-1);
+    newoutput -= _den[i]*_outputs->getValue(i-1);
   }
 
   // Divide by coefficient of first term in the denominator, in case it isn't 1
-  newoutput = newoutput/_den[1];
+  newoutput = newoutput/_den[0];
 
-  addValueToBuffer(_outputs,newoutput);   // Save new output to _outputs
+  _outputs->addValue(newoutput);           // Save new output to _outputs
   return newoutput;                       // Return the new output as well
 }
 
@@ -164,8 +164,8 @@ void  DiscreteFilter::setOrder(int order)
   _order   = order;
   _num     = new float[_order+1];
   _den     = new float[_order+1];
-  _inputs  = new float[_order+1];
-  _outputs = new float[_order+1];
+  _inputs  = new RingBuffer(_order+1);
+  _outputs = new RingBuffer(_order+1);
 
   for(int i=0; i<_order+1; i++)
   {
@@ -217,11 +217,8 @@ void  DiscreteFilter::setDenominator(float den[])
  ******************************************************************************/
 void  DiscreteFilter::clear()
 {
-  for(int i=0; i<_order+1; i++)
-  {
-    _inputs[i]  = 0;
-    _outputs[i] = 0;
-  }
+  _inputs->clear();
+  _outputs->clear();
 }
 
 ///////////////////
@@ -235,7 +232,7 @@ void  DiscreteFilter::clear()
  ******************************************************************************/
 float DiscreteFilter::getInput(int index)
 {
-  return getBufferValue(_inputs,index);
+  return _inputs->getValue(index);
 }
 
 /*******************************************************************************
@@ -245,7 +242,7 @@ float DiscreteFilter::getInput(int index)
  ******************************************************************************/
 float DiscreteFilter::getOutput(int index)
 {
-  return getBufferValue(_outputs,index);
+  return _outputs->getValue(index);
 }
 
 /*******************************************************************************
@@ -255,7 +252,7 @@ float DiscreteFilter::getOutput(int index)
  ******************************************************************************/
 float DiscreteFilter::getLastOutput()
 {
-  return this->getOutput(0);
+  return _outputs->getValue(0);
 }
 
 /*******************************************************************************
@@ -276,44 +273,4 @@ int   DiscreteFilter::getOrder()
 float DiscreteFilter::getGain()
 {
   return _gain;
-}
-
-///////////////////////
-// Private Functions //
-///////////////////////
-
-/*******************************************************************************
- * float getBufferValue(float* buffer, int index)
- *
- * Returns the value stored at index "index" (most recent = 0)
- ******************************************************************************/
-float DiscreteFilter::getBufferValue(float* buffer, int index)
-{
-  return buffer[this->convertIndex(index)];
-}
-
-/*******************************************************************************
- * void addValueToBuffer(float newvalue)
- *
- * Adds a new value to the front of the ring buffer
- ******************************************************************************/
-void DiscreteFilter::addValueToBuffer(float* buffer, float newvalue)
-{
-  _pos = this->convertIndex(-1);
-  buffer[_pos] = newvalue;
-}
-
-/*******************************************************************************
- * int convertIndex(int index)
- * private
- *
- * Converts the given index to an array index to retrieve values from data array
- * index 0 = most recent
- * index -1 = index (_length) = oldest
- ******************************************************************************/
-int DiscreteFilter::convertIndex(int index)
-{
-  int n = _pos - index;
-  if (n<0) n += _order+1;
-  return n % (_order+1);
 }
