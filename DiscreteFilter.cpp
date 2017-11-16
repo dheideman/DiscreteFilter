@@ -186,6 +186,26 @@ void  DiscreteFilter::createFirstOrderHighPassFilter(float dt, float tau)
   this->setDenominator(newden);
 }
 
+/*******************************************************************************
+ * void createPIDController(float kp,float ki,float kd,float dt)
+ *
+ * Create PID controller
+ * Based on:
+ * http://portal.ku.edu.tr/~cbasdogan/courses/robotics/projects/discrete_pid.pdf
+ ******************************************************************************/
+void  DiscreteFilter::createPIDController(float kp,float ki,float kd,float dt)
+{
+  // Calculate numerator, denominator
+  float newnum[] = {kp + ki*dt/2 + kd/dt, -1*kp + ki*dt/2 - 2*kd/dt, kd/dt};
+  float newden[] = {1, -1, 0};
+
+  // Start filling in the filter
+  this->setOrder(2);
+  this->setGain(1.0);
+  this->setNumerator(newnum);
+  this->setDenominator(newden);
+}
+
 ///////////////////
 // Set Functions //
 ///////////////////

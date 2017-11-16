@@ -8,6 +8,8 @@ This library is still very much a work in progress.  Be aware that code-breaking
 
 Coming Soon.
 
+Note: The "createPIDController()" remains untested
+
 ## Examples
 
 An examples folder is under development.

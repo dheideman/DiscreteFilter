@@ -21,6 +21,7 @@ class DiscreteFilter
     float step(float input);
     void  createFirstOrderLowPassFilter(float dt, float tau);
     void  createFirstOrderHighPassFilter(float dt, float tau);
+    void  createPIDController(float kp, float ki, float kd, float dt);
     void  setOrder(int order);
     void  setGain(float gain);
     void  setNumerator(float num[]);
