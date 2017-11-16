@@ -138,7 +138,7 @@ float DiscreteFilter::step(float input)
       newoutput = -1*_sat;
   }
 
-  _outputs->addValue(newoutput);           // Save new output to _outputs
+  _outputs->addValue(newoutput);          // Save new output to _outputs
   return newoutput;                       // Return the new output as well
 }
 
@@ -147,7 +147,7 @@ float DiscreteFilter::step(float input)
 //////////////////////////////
 
 /*******************************************************************************
- * float createFirstOrderLowPassFilter(float dt, float tau)
+ * void createFirstOrderLowPassFilter(float dt, float tau)
  *
  * Create a 1st order low-pass filter
  *   tau  - Time constant (s)
@@ -167,7 +167,7 @@ void  DiscreteFilter::createFirstOrderLowPassFilter(float dt, float tau)
 }
 
 /*******************************************************************************
- * float createFirstOrderHighPassFilter(float dt, float tau)
+ * void createFirstOrderHighPassFilter(float dt, float tau)
  *
  * Create a 1st order high-pass filter
  *   tau  - Time constant (s)
@@ -191,7 +191,7 @@ void  DiscreteFilter::createFirstOrderHighPassFilter(float dt, float tau)
 ///////////////////
 
 /*******************************************************************************
- * float setOrder(int order)
+ * void setOrder(int order)
  *
  * Set the order of an existing filter, reset arrays and buffers to new size
  ******************************************************************************/
@@ -211,7 +211,7 @@ void  DiscreteFilter::setOrder(int order)
 }
 
 /*******************************************************************************
- * float setGain(float gain)
+ * void setGain(float gain)
  *
  * Set the gain of an existing filter
  ******************************************************************************/
@@ -221,7 +221,7 @@ void DiscreteFilter::setGain(float gain)
 }
 
 /*******************************************************************************
- * float setNumerator(float num[])
+ * void setNumerator(float num[])
  *
  * Set the numerator of an existing filter
  ******************************************************************************/
@@ -234,7 +234,7 @@ void  DiscreteFilter::setNumerator(float num[])
 }
 
 /*******************************************************************************
- * float setDenominator(float den[])
+ * void setDenominator(float den[])
  *
  * Set the denominator of an existing filter
  ******************************************************************************/
@@ -257,7 +257,7 @@ void DiscreteFilter::setSaturation(float sat)
 }
 
 /*******************************************************************************
- * float clear()
+ * void clear()
  *
  * Clear the input and output buffers.
  ******************************************************************************/
