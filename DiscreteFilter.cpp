@@ -24,6 +24,7 @@ DiscreteFilter::DiscreteFilter()
 {
   _order   = 1;
   _gain    = 1.0;
+  _sat     = 0.0;
   _num     = new float[_order+1];
   _den     = new float[_order+1];
   _inputs  = new RingBuffer(_order+1);
@@ -46,6 +47,30 @@ DiscreteFilter::DiscreteFilter(int order, float num[], float den[])
 {
   _order   = order;
   _gain    = 1.0;
+  _sat     = 0.0;
+  _num     = new float[_order+1];
+  _den     = new float[_order+1];
+  _inputs  = new RingBuffer(_order+1);
+  _outputs = new RingBuffer(_order+1);
+
+  this->setNumerator(num);
+  this->setDenominator(den);
+  this->clear();
+}
+
+/*******************************************************************************
+ * Constructor
+ * DiscreteFilter(int order, float num[], float den[], float sat)
+ *
+ * Makes a filter based on given parameters.
+ * Should have empty input/output buffers.
+ * Includes saturation
+ ******************************************************************************/
+DiscreteFilter::DiscreteFilter(int order, float num[], float den[], float sat)
+{
+  _order   = order;
+  _gain    = 1.0;
+  _sat     = sat;
   _num     = new float[_order+1];
   _den     = new float[_order+1];
   _inputs  = new RingBuffer(_order+1);
@@ -65,8 +90,8 @@ DiscreteFilter::~DiscreteFilter()
 {
   delete [] _num;
   delete [] _den;
-  //delete [] _inputs;
-  //delete [] _outputs;
+  delete _inputs;
+  delete _outputs;
 }
 
 //////////////////////////
@@ -101,6 +126,17 @@ float DiscreteFilter::step(float input)
 
   // Divide by coefficient of first term in the denominator, in case it isn't 1
   newoutput = newoutput/_den[0];
+
+  // Check if saturation has been enabled
+  if(_sat > 0)
+  {
+    // Check for positive saturation
+    if(newoutput > _sat)
+      newoutput = _sat;
+    // Check for negative saturation
+    if(newoutput < -1*_sat)
+      newoutput = -1*_sat;
+  }
 
   _outputs->addValue(newoutput);           // Save new output to _outputs
   return newoutput;                       // Return the new output as well
@@ -208,6 +244,16 @@ void  DiscreteFilter::setDenominator(float den[])
   {
     _den[i] = den[i];
   }
+}
+
+/*******************************************************************************
+ * void setSaturation(float sat)
+ *
+ * Set the saturation of an existing filter
+ ******************************************************************************/
+void DiscreteFilter::setSaturation(float sat)
+{
+  _sat = sat;
 }
 
 /*******************************************************************************

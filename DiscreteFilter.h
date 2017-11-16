@@ -14,6 +14,7 @@ class DiscreteFilter
   public:
     DiscreteFilter();
     DiscreteFilter(int order, float num[], float den[]);
+    DiscreteFilter(int order, float num[], float den[], float sat);
     ~DiscreteFilter();
     float step(float input);
     void  createFirstOrderLowPassFilter(float dt, float tau);
@@ -22,6 +23,7 @@ class DiscreteFilter
     void  setGain(float gain);
     void  setNumerator(float num[]);
     void  setDenominator(float den[]);
+    void  setSaturation(float sat);
     void  clear();
     float getInput(int index);
     float getOutput(int index);
@@ -34,6 +36,7 @@ class DiscreteFilter
 
     int     _order;
     float   _gain;
+    float   _sat;
     float*  _num;
     float*  _den;
 
