@@ -6,6 +6,9 @@
 #include "Arduino.h"
 #include "DiscreteFilter.h"
 
+//////////////////
+// Constructors //
+//////////////////
 
 /*******************************************************************************
  * Default Constructor
@@ -43,6 +46,10 @@ DiscreteFilter::RingBuffer::~RingBuffer()
 {
   delete [] _data;
 }
+
+///////////////
+// Functions //
+///////////////
 
 /*******************************************************************************
  * float getValue(int index)
@@ -100,6 +107,10 @@ void DiscreteFilter::RingBuffer::clear()
   }
   _pos = 0;
 }
+
+///////////////////////
+// Private Functions //
+///////////////////////
 
 /*******************************************************************************
  * int convertIndex(int index)
