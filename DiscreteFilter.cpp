@@ -186,6 +186,31 @@ void  DiscreteFilter::createFirstOrderHighPassFilter(float dt, float tau)
   this->setDenominator(newden);
 }
 
+/*******************************************************************************
+ * void createLeadLagCompensator(float dt, float taun, float taup)
+ *
+ * Create a simple lead-lag compensator
+ *   taun - Time constant (lead) (s)
+ *   taup - Time constant (lag)  (s)
+ *   dt   - Time between executions (1/frequency) (s)
+ *
+ * Based on:
+ * http://www.informit.com/articles/article.aspx?p=32090&seqNum=8
+ ******************************************************************************/
+void  DiscreteFilter::createLeadLagCompensator(float dt, float taun, float taup)
+{
+  float kn = 2.0f*taun/dt;
+  float kp = 2.0f*taup/dt;
+
+  float newnum[] = {kn, 1.0f, 1.0f - kn};
+  float newden[] = {kp, 1.0f, 1.0f - kp};
+
+  this->setOrder(2);
+  this->setGain(1.0f);
+  this->setNumerator(newnum);
+  this->setDenominator(newden);
+}
+
 ///////////////////
 // Set Functions //
 ///////////////////

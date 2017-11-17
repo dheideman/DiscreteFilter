@@ -2,6 +2,7 @@ DiscreteFilter	KEYWORD1
 step  KEYWORD2
 createFirstOrderLowPassFilter	KEYWORD2
 createFirstOrderHighPassFilter	KEYWORD2
+createLeadLagCompensator	KEYWORD2
 setOrder  KEYWORD2
 setGain KEYWORD2
 setNumerator  KEYWORD2

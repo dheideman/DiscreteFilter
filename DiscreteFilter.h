@@ -21,6 +21,7 @@ class DiscreteFilter
     float step(float input);
     void  createFirstOrderLowPassFilter(float dt, float tau);
     void  createFirstOrderHighPassFilter(float dt, float tau);
+    void  createLeadLagCompensator(float dt, float taun, float taup);
     void  setOrder(int order);
     void  setGain(float gain);
     void  setNumerator(float num[]);
